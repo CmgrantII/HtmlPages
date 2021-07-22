@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title> Cary Grant II New Hire Assessment Task 2 </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale= 1.0">
+</head>
+
+<body>
+
+    <!--To personalize-->
+    <img src="My ScreenShot.png" alt="My picture.">
+    <style>
+        img {
+            width: 200px;
+            border-radius: 100px;
+        }
+    </style>
+    <p>
+    <h1>Cary Grant II New Hire Technical Assessment Task 2</h1>
+    </p>
+
+    <!--Assignment 2-->
+    <p>
+    <h2 id="Task-2">Task 2</h2>
+    <h3>using any dev environment create your own page using our web library and working similar to
+        https://demo.idscan.net/dvs/index.html#/
+        capturing and sending IDs and receiving verification data </h3>
+    </p>
+
+
+    <!-- Verify-->
+    <iframe id="iframe" allow="camera" src="" frameborder="0" width="100%" height="480px"></iframe>
+    <script>
+        var iframe = document.getElementById('iframe')
+
+        const REQUESTID = '1aeec219-24e6-4c85-9928-f87627457b58'
+        const TOKEN = 'cdb0207d-9475-42dc-08b8-08d94c6cc513'
+        const ORIGIN = '//dvs2.idware.net/api/Verify'
+        iframe.height = window.innerHeight
+
+        iframe.src = ORIGIN + '/embedded/' + TOKEN + '?requestId=' + REQUESTID
+
+        // event listener for accept messages of iframe
+        window.addEventListener('message', function (event) {
+            // filter by origin
+            if (event.origin !== ORIGIN) return
+            var eventData = JSON.parse(event.data)
+            console.log(eventData)
+        })
+    </script>
+
+
+
+    <!-- Request-->
+    <iframe id="iframe" allow="camera" src="" frameborder="0" width="100%" height="480px"></iframe>
+    <script>
+        var iframe = document.getElementById('iframe')
+
+        const REQUESTID = 'c16a85b6-6bd8-48b6-bf36-7bdb5054ca4f'
+        const TOKEN = 'cdb0207d-9475-42dc-08b8-08d94c6cc513'
+        const ORIGIN = '//dvs2.idware.net/api/Request'
+        iframe.height = window.innerHeight
+
+        iframe.src = ORIGIN + '/embedded/' + TOKEN + '?requestId=' + REQUESTID
+
+        // event listener for accept messages of iframe
+        window.addEventListener('message', function (event) {
+            // filter by origin
+            if (event.origin !== ORIGIN) return
+            var eventData = JSON.parse(event.data)
+            console.log(eventData)
+        })
+    </script>
+
+    
+    <!--To personalize-->
+    <a href="#">Jump to Top </a>
+
+</html>

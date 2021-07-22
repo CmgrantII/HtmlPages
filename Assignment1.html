@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title> Cary Grant II New Hire Assessment Task 1 </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale= 1.0">
+</head>
+
+<body>
+
+    <!--To personalize-->
+    <img src="My ScreenShot.png" alt="My picture.">
+    <style>
+        img {
+            width: 200px;
+            border-radius: 100px;
+        }
+    </style>
+    <p>
+    <h1>Cary Grant II New Hire Technical Assessment</h1>
+    </p>
+
+    <!--Assignment 1-->
+    <p>
+    <h2 id="Task-1">Task 1</h2>
+    <h3>Using iframe and/or SMS and dvsonline portal develop web site/page to demo DVS service functionality
+        similar to
+        https://demo.idscan.net/dvs/index.html#/ the page should work on Android(Chrome) and iOS (Safari) </h3>
+    </p>
+
+    <iframe id="iframe" allow="camera" src="" frameborder="0" width="500px"  height="480px"></iframe>
+    <script>
+        var iframe = document.getElementById('iframe')
+
+        const REQUESTID = '5508916b-be83-43a4-5b34-08d9498cf518'
+        const TOKEN = '13d5d072-667d-4e60-08b9-08d94c6cc513'
+        const ORIGIN = '//dvsonline.idscan.net'
+        iframe.height = window.innerHeight
+
+        // link creation for iframe. "origin" required parameter for cross policy
+        // Example: https://dvsonline.idscan.net/embedded/733c5e77-b2b7-4112-9bfd-f9c0da7a603c?requestId=f3dfg7-bg45-4112-9bjg-f9g54g5hgfh
+        iframe.src = ORIGIN + '/embedded/' + TOKEN + '?requestId=' + REQUESTID
+
+        // event listener for accept messages of iframe
+        window.addEventListener('message', function (event) {
+            // filter by origin
+            if (event.origin !== ORIGIN) return
+            var eventData = JSON.parse(event.data)
+            console.log(eventData)
+        })
+    </script>
+
+    <!--To personalize-->
+    <a href="#">Jump to Top </a>
+</body>
+
+</html>
