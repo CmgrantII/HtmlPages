@@ -28,53 +28,77 @@
         https://demo.idscan.net/dvs/index.html#/
         capturing and sending IDs and receiving verification data </h3>
     </p>
-
-
-    <!-- Verify-->
-    <iframe id="iframe" allow="camera" src="" frameborder="0" width="100%" height="480px"></iframe>
-    <script>
-        var iframe = document.getElementById('iframe')
-
-        const REQUESTID = '1aeec219-24e6-4c85-9928-f87627457b58'
-        const TOKEN = 'cdb0207d-9475-42dc-08b8-08d94c6cc513'
-        const ORIGIN = '//dvs2.idware.net/api/Verify'
-        iframe.height = window.innerHeight
-
-        iframe.src = ORIGIN + '/embedded/' + TOKEN + '?requestId=' + REQUESTID
-
-        // event listener for accept messages of iframe
-        window.addEventListener('message', function (event) {
-            // filter by origin
-            if (event.origin !== ORIGIN) return
-            var eventData = JSON.parse(event.data)
-            console.log(eventData)
-        })
-    </script>
-
-
-
-    <!-- Request-->
-    <iframe id="iframe" allow="camera" src="" frameborder="0" width="100%" height="480px"></iframe>
-    <script>
-        var iframe = document.getElementById('iframe')
-
-        const REQUESTID = 'c16a85b6-6bd8-48b6-bf36-7bdb5054ca4f'
-        const TOKEN = 'cdb0207d-9475-42dc-08b8-08d94c6cc513'
-        const ORIGIN = '//dvs2.idware.net/api/Request'
-        iframe.height = window.innerHeight
-
-        iframe.src = ORIGIN + '/embedded/' + TOKEN + '?requestId=' + REQUESTID
-
-        // event listener for accept messages of iframe
-        window.addEventListener('message', function (event) {
-            // filter by origin
-            if (event.origin !== ORIGIN) return
-            var eventData = JSON.parse(event.data)
-            console.log(eventData)
-        })
-    </script>
-
     
+<div id="videoCapturingEl">
+<script type="module" src="main.js" >
+  
+  import IDVC from '@idscan/idvc';
+import '../node_modules/@idscan/idvc/dist/css/idvc.css';
+
+
+new IDVC({
+    el: 'videoCapturingEl',
+    networkUrl: '/assets/networks',
+    licenseKey: 'ISC',
+    types: ['ID'],
+    showSubmitBtn: false,
+    enableLimitation: false,
+    autoContinue : true,
+    isShowVersion : false,
+    tapBackSide : true,
+    tapFace : true,
+    realFaceMode : 'all',
+    steps: [
+        {type: 'front', name: 'Front Scan'},
+        {type: 'face', name: 'Selfie'}
+    ],
+    onChange (event) {
+         console.log(event.step);
+    },
+    submit (data) {
+        let backStep = data.steps.find(item => item.type === 'back')
+        let trackString = (backStep && backStep.trackString) ? backStep.trackString : ''
+
+        let request = {
+            frontImageBase64: data.steps.find (item => item.type === 'front').img.split (/:image\/(jpeg|png);base64,/)[2],
+            backOrSecondImageBase64: backStep.img.split (/:image\/(jpeg|png);base64,/)[2],
+            faceImageBase64: data.steps.find (item => item.type === 'face').img.split (/:image\/(jpeg|png);base64,/)[2],
+            documentType: data.documentType,
+            trackString: trackString
+        }
+        
+        fetch ('https://dvs2.idware.net/api/Request', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': 'pk_8f325537-d394-4cf9-84d6-a96242afb80e' 
+            },
+            body: JSON.stringify (request)
+        }).then (response => response.json ())
+            .then (response => {
+                fetch ( 'https://us-central1-test2353.cloudfunctions.net/api', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify ({
+                        requestId: response.requestId,
+                        documentType: response.documentType
+                    })
+                }).then (response => response.json ())
+                    .then (data => {
+                        
+                        alert((data.payload.isDocumentSuccess) ? 'Document valid' : 'Document invalid')
+                    })
+            }).catch(() => {
+            
+        })
+    }
+    });
+
+  </script>
+</div>
+
     <!--To personalize-->
     <a href="#">Jump to Top </a>
 
